@@ -4,11 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode=production",
+    "dev": "webpack --mode=development"
   },
   "keywords": [
     "calendar-view"
   ],
   "author": "Majid Ataee",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "bootstrap": "^4.1.2",
+    "jquery": "^3.3.1",
+    "popper.js": "^1.14.3",
+    "webpack": "^4.16.1",
+    "webpack-cli": "^3.1.0"
+  }
 }
