@@ -36,13 +36,21 @@ const CalendarView = (($) => {
 
         // Public
 
+        render(action) {
+            this._renderDayList(action);
+        }
         
         // Private
         
-        
+        _renderDayList(action) {
+            $day = action(date);
+
+            $dayList.append($day);
+        }
+
         // Static
 
-        static _jQueryInterface(config) {
+        static _jQueryInterface(method, ...args) {
             return this.each(function () {
                 const $this = $(this)
                 let data = $this.data(DATA_KEY)
@@ -52,11 +60,11 @@ const CalendarView = (($) => {
                     $this.data(DATA_KEY, data)
                 }
 
-                if (typeof config === 'string') {
-                    if (typeof data[config] === 'undefined') {
-                        throw new TypeError(`No method named "${config}"`)
+                if (typeof method === 'string') {
+                    if (typeof data[method] === 'undefined') {
+                        throw new TypeError(`No method named "${method}"`)
                     }
-                    data[config]()
+                    data[method](args)
                 }
             })
         }
