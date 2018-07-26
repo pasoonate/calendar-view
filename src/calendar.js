@@ -93,5 +93,3 @@ const CalendarView = (($) => {
 
     return CalendarView;
 })($);
-
-export default CalendarView;
