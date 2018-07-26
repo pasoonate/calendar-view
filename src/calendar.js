@@ -1,4 +1,3 @@
-
 const CalendarView = (($) => {
 
     /**
@@ -18,9 +17,15 @@ const CalendarView = (($) => {
     }
 
     const ClassName = {
+        WEEK_VIEW: 'calendar-week-view',
+        DAY_VIEW: 'calendar-day-view',
+        DAY_VIEW_TODAY: 'calendar-day-view-today',
+        DAY_VIEW_INFOCUS: 'calendar-day-view-infocus',
+        DAY_VIEW_OUTFOCUS: 'calendar-day-view-outfocus',
     }
 
     const Selector = {
+        MONTH_VIEW: 'tbody.calendar-month-view'
     }
 
     /**
@@ -32,20 +37,81 @@ const CalendarView = (($) => {
     class CalendarView {
         constructor(element) {
             this.element = element;
+            this.beforeRenderDayAction = (date) => { return date.getDate(); };
+            
         }
 
         // Public
 
-        render(action) {
-            this._renderDayList(action);
+        render() {
+            this._renderMonthView(new Date());
         }
-        
-        // Private
-        
-        _renderDayList(action) {
-            $day = action(date);
 
-            $dayList.append($day);
+        beforeRenderDay([action]) {
+            if(typeof action === 'function') {
+                this.beforeRenderDayAction = action;
+            }
+        }
+
+        // Private
+
+        _renderMonthView(today) {
+            let $monthView = $(this.element).find(Selector.MONTH_VIEW);
+            let firstOfWeek = new Date();
+            let firstOfMonth = new Date(today);
+            let firstOfWeekTime;
+            let diffDaysToFirstWeek;
+
+            firstOfMonth.setDate(1);
+            diffDaysToFirstWeek = (firstOfMonth.getDay() + 1) % 7;
+            firstOfWeekTime = firstOfMonth.getTime() - (diffDaysToFirstWeek * 24 * 60 * 60 * 1000);
+            firstOfWeek.setTime(firstOfWeekTime);
+
+            for(let i = 1; i <= 6; i++) {
+                $monthView.append(this._renderWeekView(firstOfWeek, i, today));
+
+                firstOfWeekTime += 7 * 24 * 60 * 60 * 1000;
+                firstOfWeek.setTime(firstOfWeekTime);
+            }
+        }
+
+        _renderWeekView(from, week, today) {
+            let $week = $('<tr>');
+            let dayStep = 24 * 60 * 60 * 1000;
+            let day = new Date(from);
+            
+            $week.addClass(ClassName.WEEK_VIEW).addClass('week-' + week);
+
+            for(let i = 0; i < 7; i++) {
+                $week.append(this._renderDayView(day, today));
+                day.setTime(day.getTime() + dayStep);
+            }
+
+            return $week;
+        }
+
+        _renderDayView(day, today) {
+            let content = this.beforeRenderDayAction(day);
+            let $day = $('<td role="presentation">');
+
+            $day.addClass(ClassName.DAY_VIEW);
+            $day.attr('data-pick', day.getTime());
+            
+            if(day.getMonth() === today.getMonth()) {
+                $day.attr('data-day', day.getDate());
+                $day.addClass(ClassName.DAY_VIEW_INFOCUS);
+            }
+            else {
+                $day.addClass(ClassName.DAY_VIEW_OUTFOCUS);
+            }
+
+            if(day.toDateString() === today.toDateString()) {
+                $day.addClass(ClassName.DAY_VIEW_TODAY);
+            }
+
+            $day.html(content);
+
+            return $day;
         }
 
         // Static

@@ -9,13 +9,52 @@
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="node_modules/pasoonate/dist/pasoonate.js"></script>
     <script src="src/calendar.js"></script>
 </head>
-<body>
-    <div class="calendar-view"></div>
+<body dir="rtl">
+    <table class="calendar-view">
+        <thead>
+            <tr>
+                <th class="calendar-nav" colspan="7"></th>
+            </tr>
+            <tr class="calendar-weekdays">
+                <th class="calendar-weekday" scope="col">
+                    <span class="d-block d-sm-none">ش</span>
+                    <span class="d-none d-sm-block">شنبه</span>
+                </th>
+                <th class="calendar-weekday" scope="col">
+                    <span class="d-block d-sm-none">ی</span>
+                    <span class="d-none d-sm-block">یک‌شنبه</span>
+                </th>
+                <th class="calendar-weekday" scope="col">
+                    <span class="d-block d-sm-none">د</span>
+                    <span class="d-none d-sm-block">دوشنبه</span>
+                </th>
+                <th class="calendar-weekday" scope="col">
+                    <span class="d-block d-sm-none">س</span>
+                    <span class="d-none d-sm-block">سه‌شنبه</span>
+                </th>
+                <th class="calendar-weekday" scope="col">
+                    <span class="d-block d-sm-none">چ</span>
+                    <span class="d-none d-sm-block">چهارشنبه</span>
+                </th>
+                <th class="calendar-weekday" scope="col">
+                    <span class="d-block d-sm-none">پ</span>
+                    <span class="d-none d-sm-block">پنج‌شنبه</span>
+                </th>
+                <th class="calendar-weekday" scope="col">
+                    <span class="d-block d-sm-none">ج</span>
+                    <span class="d-none d-sm-block">جمعه</span>
+                </th>
+            </tr>
+        </thead>
+        <tbody class="calendar-month-view"></tbody>
+    </table>
 
     <script>
-        $('.calendar-view').calendarView();
+        $('.calendar-view').calendarView('beforeRenderDay', (date) => { return '<b>' + date.getDate() + '</b>';});
+        $('.calendar-view').calendarView('render');
     </script>
 </body>
 </html>

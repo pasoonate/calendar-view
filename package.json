@@ -18,5 +18,7 @@
     "jquery": "^3.3.1",
     "popper.js": "^1.14.3"
   },
-  "dependencies": {}
+  "dependencies": {
+    "pasoonate": "^0.1.4"
+  }
 }
