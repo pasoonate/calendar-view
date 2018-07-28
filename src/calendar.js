@@ -51,7 +51,7 @@ const CalendarView = (($) => {
         render() {
             this._goto();
             $(this.element).trigger($.Event(Event.CHANGE, {
-                current: this.current
+                current: Pasoonate.make(this.current.getTimestamp())[this.calendar]()
             }));
         }
 
@@ -156,7 +156,7 @@ const CalendarView = (($) => {
 
                 const changeEvent = $.Event(Event.CHANGE, {
                     old: old,
-                    current: this.current
+                    current: Pasoonate.make(this.current.getTimestamp())[this.calendar]()
                 })
 
                 $(this.element).trigger(changeEvent);
