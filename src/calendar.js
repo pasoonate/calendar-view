@@ -14,6 +14,7 @@ const CalendarView = (($) => {
     const JQUERY_NO_CONFLICT = $.fn[NAME]
 
     const Event = {
+        CHANGE: `change${EVENT_KEY}`,
     }
 
     const ClassName = {
@@ -22,6 +23,7 @@ const CalendarView = (($) => {
         DAY_VIEW_TODAY: 'calendar-day-view-today',
         DAY_VIEW_INFOCUS: 'calendar-day-view-infocus',
         DAY_VIEW_OUTFOCUS: 'calendar-day-view-outfocus',
+        DAY_VIEW_SELECTED: 'calendar-day-view-selected',
     }
 
     const Selector = {
@@ -37,14 +39,20 @@ const CalendarView = (($) => {
     class CalendarView {
         constructor(element) {
             this.element = element;
-            this.beforeRenderDayAction = (date) => { return date.getDate(); };
-            
+            this.calendar = 'jalali';
+            this.current = Pasoonate.make()[this.calendar]();
+            this.beforeRenderDayAction = (date) => { return date.getDay(); };
+
+            this.render();
         }
-
+        
         // Public
-
+        
         render() {
-            this._renderMonthView(new Date());
+            this._goto();
+            $(this.element).trigger($.Event(Event.CHANGE, {
+                current: this.current
+            }));
         }
 
         beforeRenderDay([action]) {
@@ -53,65 +61,113 @@ const CalendarView = (($) => {
             }
         }
 
+        goto([year, month, day]) {
+            this._goto(year, month, day);
+        }
+
+        nextMonth() {
+            let date = Pasoonate.make(this.current.getTimestamp())[this.calendar]();
+            date.addMonth(1);
+
+            this._goto(date.getYear(), date.getMonth());
+        }
+
+        prevMonth() {
+            let date = Pasoonate.make(this.current.getTimestamp())[this.calendar]();
+            date.subMonth(1);
+
+            this._goto(date.getYear(), date.getMonth());
+        }
+
         // Private
 
-        _renderMonthView(today) {
+        _renderMonthView() {
             let $monthView = $(this.element).find(Selector.MONTH_VIEW);
-            let firstOfWeek = new Date();
-            let firstOfMonth = new Date(today);
-            let firstOfWeekTime;
-            let diffDaysToFirstWeek;
+            let firstOfMonth = Pasoonate.make()[this.calendar]();
+            let firstOfWeek;
 
-            firstOfMonth.setDate(1);
-            diffDaysToFirstWeek = (firstOfMonth.getDay() + 1) % 7;
-            firstOfWeekTime = firstOfMonth.getTime() - (diffDaysToFirstWeek * 24 * 60 * 60 * 1000);
-            firstOfWeek.setTime(firstOfWeekTime);
+            $monthView.empty();
+
+            firstOfMonth.setTimestamp(this.current.getTimestamp()).setDay(1);
+
+            firstOfWeek = firstOfMonth.subDay(firstOfMonth.dayOfWeek());
 
             for(let i = 1; i <= 6; i++) {
-                $monthView.append(this._renderWeekView(firstOfWeek, i, today));
+                $monthView.append(this._renderWeekView(firstOfWeek, i));
 
-                firstOfWeekTime += 7 * 24 * 60 * 60 * 1000;
-                firstOfWeek.setTime(firstOfWeekTime);
+                firstOfWeek.addDay(7);
             }
         }
 
-        _renderWeekView(from, week, today) {
+        _renderWeekView(from, week) {
             let $week = $('<tr>');
-            let dayStep = 24 * 60 * 60 * 1000;
-            let day = new Date(from);
+            let day = Pasoonate.make(from.getTimestamp())[this.calendar]();
             
             $week.addClass(ClassName.WEEK_VIEW).addClass('week-' + week);
 
             for(let i = 0; i < 7; i++) {
-                $week.append(this._renderDayView(day, today));
-                day.setTime(day.getTime() + dayStep);
+                $week.append(this._renderDayView(day));
+                day.addDay(1);
             }
 
             return $week;
         }
 
-        _renderDayView(day, today) {
+        _renderDayView(day) {
             let content = this.beforeRenderDayAction(day);
             let $day = $('<td role="presentation">');
+            let today = Pasoonate.make()[this.calendar]();
 
             $day.addClass(ClassName.DAY_VIEW);
-            $day.attr('data-pick', day.getTime());
+            $day.attr('data-pick', day.getTimestamp());
             
-            if(day.getMonth() === today.getMonth()) {
-                $day.attr('data-day', day.getDate());
+            if(day.getMonth() === this.current.getMonth()) {
+                $day.attr('data-day', day.getDay());
                 $day.addClass(ClassName.DAY_VIEW_INFOCUS);
             }
             else {
                 $day.addClass(ClassName.DAY_VIEW_OUTFOCUS);
             }
 
-            if(day.toDateString() === today.toDateString()) {
+            if(day.format('yyyy-mm-dd') === today.format('yyyy-mm-dd')) {
                 $day.addClass(ClassName.DAY_VIEW_TODAY);
+            }
+
+            if(day.format('yyyy-mm-dd') === this.current.format('yyyy-mm-dd')) {
+                $day.addClass(ClassName.DAY_VIEW_SELECTED);
             }
 
             $day.html(content);
 
             return $day;
+        }
+
+        _goto(year, month, day) {
+            
+            let old = Pasoonate.make(this.current.getTimestamp())[this.calendar]();
+            let isChange = false;
+
+            isChange = (year && year != this.current.getYear()) | (month && month != this.current.getMonth()) | (day && day != this.current.getDay());
+
+            if(isChange) {
+                this.current.setYear(parseInt(year) || this.current.getYear());
+                this.current.setMonth(parseInt(month) || this.current.getMonth());
+                this.current.setDay(parseInt(day) || this.current.getDay());
+
+                const changeEvent = $.Event(Event.CHANGE, {
+                    old: old,
+                    current: this.current
+                })
+
+                $(this.element).trigger(changeEvent);
+                
+                if (changeEvent.isDefaultPrevented()) {
+                    this.current.setTimestamp(old.getTimestamp());
+                    return;
+                }
+            } 
+
+            this._renderMonthView();
         }
 
         // Static

@@ -19,6 +19,6 @@
     "popper.js": "^1.14.3"
   },
   "dependencies": {
-    "pasoonate": "^0.1.4"
+    "pasoonate": "^0.1.5"
   }
 }

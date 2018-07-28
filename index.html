@@ -13,48 +13,87 @@
     <script src="src/calendar.js"></script>
 </head>
 <body dir="rtl">
-    <table class="calendar-view">
-        <thead>
-            <tr>
-                <th class="calendar-nav" colspan="7"></th>
-            </tr>
-            <tr class="calendar-weekdays">
-                <th class="calendar-weekday" scope="col">
-                    <span class="d-block d-sm-none">ش</span>
-                    <span class="d-none d-sm-block">شنبه</span>
-                </th>
-                <th class="calendar-weekday" scope="col">
-                    <span class="d-block d-sm-none">ی</span>
-                    <span class="d-none d-sm-block">یک‌شنبه</span>
-                </th>
-                <th class="calendar-weekday" scope="col">
-                    <span class="d-block d-sm-none">د</span>
-                    <span class="d-none d-sm-block">دوشنبه</span>
-                </th>
-                <th class="calendar-weekday" scope="col">
-                    <span class="d-block d-sm-none">س</span>
-                    <span class="d-none d-sm-block">سه‌شنبه</span>
-                </th>
-                <th class="calendar-weekday" scope="col">
-                    <span class="d-block d-sm-none">چ</span>
-                    <span class="d-none d-sm-block">چهارشنبه</span>
-                </th>
-                <th class="calendar-weekday" scope="col">
-                    <span class="d-block d-sm-none">پ</span>
-                    <span class="d-none d-sm-block">پنج‌شنبه</span>
-                </th>
-                <th class="calendar-weekday" scope="col">
-                    <span class="d-block d-sm-none">ج</span>
-                    <span class="d-none d-sm-block">جمعه</span>
-                </th>
-            </tr>
-        </thead>
-        <tbody class="calendar-month-view"></tbody>
-    </table>
+    <div class="container">
+        <div class="row">
+            <div class="col-8">
+                <table class="table table-bordered calendar-view">
+                    <thead>
+                        <tr>
+                            <th class="calendar-nav" colspan="1">
+                                <button type="button" class="btn btn-sm btn-light" onclick="$(this).closest('.calendar-view').calendarView('prevMonth')">ماه قبل</button>
+                            </th>
+                            <th class="calendar-nav calendar-year-month-view" colspan="5">
+
+                            </th>
+                            <th class="calendar-nav" colspan="1">
+                                <button type="button" class="btn btn-sm btn-light" onclick="$(this).closest('.calendar-view').calendarView('nextMonth')">ماه بعد</button>
+                            </th>
+                        </tr>
+                        <tr class="calendar-weekdays">
+                            <th class="calendar-weekday" scope="col">
+                                <span class="d-block d-sm-none">ش</span>
+                                <span class="d-none d-sm-block">شنبه</span>
+                            </th>
+                            <th class="calendar-weekday" scope="col">
+                                <span class="d-block d-sm-none">ی</span>
+                                <span class="d-none d-sm-block">یک‌شنبه</span>
+                            </th>
+                            <th class="calendar-weekday" scope="col">
+                                <span class="d-block d-sm-none">د</span>
+                                <span class="d-none d-sm-block">دوشنبه</span>
+                            </th>
+                            <th class="calendar-weekday" scope="col">
+                                <span class="d-block d-sm-none">س</span>
+                                <span class="d-none d-sm-block">سه‌شنبه</span>
+                            </th>
+                            <th class="calendar-weekday" scope="col">
+                                <span class="d-block d-sm-none">چ</span>
+                                <span class="d-none d-sm-block">چهارشنبه</span>
+                            </th>
+                            <th class="calendar-weekday" scope="col">
+                                <span class="d-block d-sm-none">پ</span>
+                                <span class="d-none d-sm-block">پنج‌شنبه</span>
+                            </th>
+                            <th class="calendar-weekday" scope="col">
+                                <span class="d-block d-sm-none">ج</span>
+                                <span class="d-none d-sm-block">جمعه</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="calendar-month-view"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
     <script>
-        $('.calendar-view').calendarView('beforeRenderDay', (date) => { return '<b>' + date.getDate() + '</b>';});
-        $('.calendar-view').calendarView('render');
+        $('.calendar-view').on('change.bs.calendar-view', function (event) {
+            $(this).find('.calendar-year-month-view').html(event.current.getYear() + '-' + event.current.getMonth()); 
+        });
+        $('.calendar-view').calendarView('beforeRenderDay', (date) => { return '<span>' + date.jalali().getDay() + '</span>';});
     </script>
+    <style>
+        .calendar-day-view-outfocus {
+            color: gray;
+        }
+
+        .calendar-day-view-selected {
+            color: green;
+        }
+
+        .calendar-day-view-today {
+            color: red;
+        }
+
+        .calendar-day-view {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        th {
+            text-align: center;
+            width: calc(100% / 7);
+        }
+    </style>
 </body>
 </html>
