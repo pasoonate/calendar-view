@@ -9,14 +9,14 @@ const regex = /^(import|export).*;{1}$/gm;
 
 gulp.task('js-build', function(){
   return gulp.src(['./src/*.js', ], {base:'./'})
-    .pipe(concat('date-picker.js'))
+    .pipe(concat('calendar-view.js'))
     .pipe(replace(regex, ''))
     .pipe(gulp.dest('dist'))
 });
 
 gulp.task('js-minify', function(){
   return gulp.src(['./src/*.js', ], {base:'./'})
-    .pipe(concat('date-picker.js'))
+    .pipe(concat('calendar-view.js'))
     .pipe(replace(regex, ''))
     .pipe(minify())
     .pipe(gulp.dest('dist'))
