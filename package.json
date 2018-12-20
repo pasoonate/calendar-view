@@ -1,6 +1,6 @@
 {
   "name": "pasoon-calendar-view",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Pasoon calendar view javascript component powered by pasoonate-js library.",
   "main": "src/calendar-view.js",
   "scripts": {

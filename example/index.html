@@ -70,6 +70,8 @@
         $('.calendar-view').on('change.bs.calendar-view', function (event) {
             $(this).find('.calendar-year-month-view').html(event.current.getYear() + '-' + event.current.getMonth()); 
         });
+        $('.calendar-view').calendarView('weekViewElement', '<tr class="week-test">');
+        $('.calendar-view').calendarView('dayViewElement', '<td class="day-test">');
         $('.calendar-view').calendarView('beforeRenderDay', (date) => { return '<span>' + date.jalali().getDay() + '</span>';});
     </script>
     <style>

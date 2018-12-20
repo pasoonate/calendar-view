@@ -40,7 +40,7 @@ const CalendarView = (($) => {
 
     const Selector = {
         CALENDAR_VIEW: `.${ClassName.CALENDAR_VIEW}`,
-        MONTH_VIEW: `tbody.${ClassName.MONTH_VIEW}`,
+        MONTH_VIEW: `.${ClassName.MONTH_VIEW}`,
         DAY_VIEW: `.${ClassName.DAY_VIEW}`
     }
 
@@ -55,6 +55,8 @@ const CalendarView = (($) => {
             this._element = element;
             this._calendar = 'jalali';
             this._current = Pasoonate.make()[this._calendar]();
+            this._weekViewElement = '<tr>';
+            this._dayViewElement = '<td>';
             this.beforeRenderDayAction = (date) => { return date.getDay(); };
 
             this.render();
@@ -73,6 +75,22 @@ const CalendarView = (($) => {
             if(typeof action === 'function') {
                 this.beforeRenderDayAction = action;
                 this._renderMonthView();
+            }
+        }
+
+        weekViewElement([element]) {
+            if(typeof element === 'function') {
+                this._weekViewElement = element();
+            } else {
+                this._weekViewElement = element;
+            }
+        }
+
+        dayViewElement([element]) {
+            if(typeof element === 'function') {
+                this._dayViewElement = element();
+            } else {
+                this._dayViewElement = element;
             }
         }
 
@@ -209,7 +227,7 @@ const CalendarView = (($) => {
         }
 
         _renderWeekView(from, week) {
-            let $week = $('<tr>');
+            let $week = $(this._weekViewElement);
             let day = Pasoonate.make(from.getTimestamp())[this._calendar]();
             
             $week.addClass(ClassName.WEEK_VIEW).addClass('week-' + week);
@@ -224,7 +242,7 @@ const CalendarView = (($) => {
 
         _renderDayView(day) {
             let content = this.beforeRenderDayAction(day);
-            let $day = $('<td role="presentation">');
+            let $day = $(this._dayViewElement);
             let today = Pasoonate.make()[this._calendar]();
 
             $day.addClass(ClassName.DAY_VIEW);
@@ -280,19 +298,19 @@ const CalendarView = (($) => {
 
         static _jQueryInterface(method, ...args) {
             return this.each(function () {
-                const $this = $(this)
-                let data = $this.data(DATA_KEY)
+                const $this = $(this);
+                let data = $this.data(DATA_KEY);
 
                 if (!data) {
-                    data = new CalendarView(this)
-                    $this.data(DATA_KEY, data)
+                    data = new CalendarView(this);
+                    $this.data(DATA_KEY, data);
                 }
 
                 if (typeof method === 'string') {
                     if (typeof data[method] === 'undefined') {
-                        throw new TypeError(`No method named "${method}"`)
+                        throw new TypeError(`No method named "${method}"`);
                     }
-                    data[method](args)
+                    data[method](args);
                 }
             })
         }
