@@ -1,4 +1,4 @@
-import Pasoonate from "./pasoonate";
+import Pasoonate from "pasoonate";
 
 const CalendarView = (($) => {
 
