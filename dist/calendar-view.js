@@ -9,7 +9,7 @@ const CalendarView = (($) => {
      */
 
     const NAME = 'calendarView'
-    const VERSION = '1.0.0'
+    const VERSION = '1.0.5'
     const DATA_KEY = 'bs.calendar-view'
     const EVENT_KEY = `.${DATA_KEY}`
     const DATA_API_KEY = '.data-api'
@@ -140,9 +140,9 @@ const CalendarView = (($) => {
             
             day.addDay(1);
             
-            while(day.format('yyyy-mm-dd') !== end) {
+            while(day.format('yyyy-MM-dd') !== end) {
                 $(this._element)
-                    .find(`${Selector.DAY_VIEW}[data-gregorian-date=${day.format('yyyy-mm-dd')}]`)
+                    .find(`${Selector.DAY_VIEW}[data-gregorian-date=${day.format('yyyy-MM-dd')}]`)
                     .addClass(ClassName.DAY_VIEW_BETWEEN);
 
                 day.addDay(1);
@@ -247,7 +247,7 @@ const CalendarView = (($) => {
 
             $day.addClass(ClassName.DAY_VIEW);
             $day.attr('data-pick', day.getTimestamp());
-            $day.attr('data-gregorian-date', Pasoonate.make(day.getTimestamp()).gregorian().format('yyyy-mm-dd'));
+            $day.attr('data-gregorian-date', Pasoonate.make(day.getTimestamp()).gregorian().format('yyyy-MM-dd'));
             
             if(day.getMonth() === this._current.getMonth()) {
                 $day.attr('data-day', day.getDay());
@@ -257,7 +257,7 @@ const CalendarView = (($) => {
                 $day.addClass(ClassName.DAY_VIEW_OUTFOCUS);
             }
 
-            if(day.format('yyyy-mm-dd') === today.format('yyyy-mm-dd')) {
+            if(day.format('yyyy-MM-dd') === today.format('yyyy-MM-dd')) {
                 $day.addClass(ClassName.DAY_VIEW_TODAY);
             }
 
